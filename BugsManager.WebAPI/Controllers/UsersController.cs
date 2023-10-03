@@ -14,7 +14,6 @@ namespace BugsManager.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowOrigin")]
     public class UsersController : ApiControllerBase
     {
         private readonly IMediator _mediator;
