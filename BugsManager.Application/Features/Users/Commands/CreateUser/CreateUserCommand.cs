@@ -19,7 +19,7 @@ namespace BugsManager.Application.Features.Users.Commands.CreateUser
         public string Surname { get; set; }
     }
 
-    internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<int>>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

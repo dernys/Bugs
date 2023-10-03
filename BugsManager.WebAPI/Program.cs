@@ -14,15 +14,15 @@ builder.Services.AddSwaggerGen();
 
 
 
-var MyAllowSpecificOrigins = "AllowOrigin";
+var MyAllowSpecificOrigins = "AllowSpecificOrigin";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("https://localhost:7164")
+            builder.WithOrigins("https://localhost:5000", "http://localhost:5001")
                                .AllowAnyHeader()
-                               .AllowAnyMethod();
+                               .WithMethods("PUT", "DELETE", "GET", "POST");
         });
 });
 
@@ -40,20 +40,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
-
-        // Para permitir swagger-client
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Nombre de tu API v1");
         c.RoutePrefix = string.Empty;
     });
 }
+app.UseCors(MyAllowSpecificOrigins);
 
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseCors(MyAllowSpecificOrigins);
+
 app.MapControllers();
 
-
-app.UseRequestLocalization();
-
-
 app.Run();
+
+
