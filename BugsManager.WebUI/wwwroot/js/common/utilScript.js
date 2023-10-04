@@ -537,4 +537,120 @@ const utilScript = {
         },
     },
 
+    select2: {
+        prePagination: function (params) {
+            return {
+                searchString: params.term,
+                pageIndex: params.page || 1,
+                pageSize: params.pageSize || 20,
+            }
+        },
+        postPagination: function (data, params) {
+            return {
+                more: true
+            }
+        },
+        buildSelect2: function (selector, url = null, fieldId = null, fieldName = null, extraConfig = {}, object = null, groupFieldId = null, groupFieldName = null) {
+            let config = {
+                placeholder: $(selector).attr('placeholder') || '',
+                width: '100%',
+                allowClear: true,
+                theme: 'bootstrap4'
+            };
+            if (url) {
+                $.extend(true, config, {
+                    ajax: {
+                        url: utilScript.buildAction(url),
+                        type: 'GET',
+                        cache: true,
+                        async: true,
+                        dataType: 'json',
+                        delay: 250,
+                        data: utilScript.select2.prePagination,
+                        processResults: function (result, params) {
+                            params.pageSize = 20;
+                            params.page = params.page || 1;
+                            $.each(result.data, function (i, v) {
+
+                                result.data[i].id = v[fieldId];
+                                result.data[i].text = v[fieldName];
+                            });
+                            if (groupFieldId) {
+                                let groupedData = [];
+                                $.each(result.data, function (i, v) {
+                                    let id = utilScript.resolve(groupFieldId, v, '.');
+                                    if (groupedData.findIndex(x => x.id === id) === -1) {
+                                        groupedData.push({
+                                            id: id,
+                                            text: utilScript.resolve(groupFieldName, v, '.'),
+                                            children: []
+                                        });
+                                    }
+                                    groupedData[groupedData.findIndex(x => x.id === id)].children.push(v);
+                                });
+                                result.data = groupedData;
+                                console.log(groupedData);
+                            }
+                           
+                            return {
+                                results: result.data,
+                                pagination: utilScript.select2.postPagination(result, params),
+                            };
+                        },
+                        statusCode: {
+                            422: utilScript.statusCode422
+                        },
+                    },
+                });
+            }
+            $.extend(true, config, extraConfig);
+            let select2 = $(selector).select2(config);
+            select2.on('change.select2', function (e) {
+               
+                if (e.params) {
+                    if (e.params.from === '_ModalForm' && object) {
+                        let result = e.params.data[object];
+                        if (result) {                           
+                            select2.append(new Option(result[fieldName], result[fieldId], true, true));
+                        }
+                    }
+                }
+            });
+            return select2
+        },
+    },
+
+    dateFormat: 'DD/MM/YYYY',
+    dateTimeFormat: 'DD/MM/YYYY HH:mm:ss',
+    buildDateRangePicker: function (selector, single = false, dateFormat = false) {
+        selector = $(selector);
+        let myFormat = dateFormat ? utilScript.dateFormat : utilScript.dateTimeFormat;
+        selector.daterangepicker({
+            timePicker: !dateFormat,
+            timePickerIncrement: 30,
+            autoUpdateInput: false,
+            autoApply: true,
+            singleDatePicker: single,
+            locale: {
+                format: myFormat,
+                applyLabel: "Apply",
+                cancelLabel: "Clear",
+
+            }
+        }).on('show.daterangepicker', function (ev, picker) {
+            // console.log(selector.val())
+            $(this).val(selector.val()).trigger('change');
+        }).on('cancel.daterangepicker', function (ev, picker) {
+            //console.log(picker)
+            selector.val(null).trigger('change');
+            $(this).val(null).trigger('change');
+        }).on('apply.daterangepicker', function (ev, picker) {
+            let value = single ? picker.startDate.format(myFormat) : picker.startDate.format(myFormat) + ' - ' + picker.endDate.format(myFormat);
+            vacations.startDate = picker.startDate.format(myFormat);
+            vacations.endDate = single ? picker.startDate.format(myFormat) : picker.endDate.format(myFormat);
+            //console.log(value);
+            selector.val(value).trigger('change');
+        }).trigger('hide.daterangepicker');
+    },
+
 }
