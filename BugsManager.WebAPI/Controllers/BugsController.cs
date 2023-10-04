@@ -28,10 +28,10 @@ namespace BugsManager.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Result<List<GetAllBugsDto>>>> Get([FromQuery] GetAllBugsQuery query)
         {
-            if (query.project_id == null && query.user_id == null && query.start_date == null && query.end_date == null)
+            /*if (query.project_id == null && query.user_id == null && query.start_date == null && query.end_date == null)
             {
                 return StatusCode(405); // 405 Status Code - Método no permitido
-            }
+            }*/
 
             return await _mediator.Send(query);
         }

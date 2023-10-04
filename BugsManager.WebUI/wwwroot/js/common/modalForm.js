@@ -179,13 +179,7 @@ function saveForm(closeOnFinish) {
                 quickForm[0].reset();
                 quickForm.validate().resetForm();
                 form[0].reset();
-                $('#modal-form select').each(function () {
-                    if ($(this).data('select2')) {
-                        $(this).val(null).trigger('change.select2');
-                    } else {
-                        $(this).val(null);
-                    }
-                });
+               
                 modalForm.modal('hide');
             } else {
                 $('#validation-summary').text("");
