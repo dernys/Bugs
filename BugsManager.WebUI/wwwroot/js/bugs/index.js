@@ -51,8 +51,12 @@ function BugsCRUD() {
         buttons: utilScript.dataTables.buildButton("/api/Bugs")
        
     })
-    utilScript.select2.buildSelect2("#UserId", '/api/Users', 'id', 'name', {}, 'user');
-    utilScript.select2.buildSelect2("#ProjectId", '/api/Projects', 'id', 'name', {}, 'project');
+    utilScript.select2.buildSelect2("#UserId", '/api/Users', 'id', 'name', 
+        { width: '100%', dropdownParent: $('#modal-form'), dropdownCss: { 'z-index': 10000 } }
+        , 'user');
+    utilScript.select2.buildSelect2("#ProjectId", '/api/Projects', 'id', 'name', 
+        { width: '100%', dropdownParent: $('#modal-form'), dropdownCss: { 'z-index': 10000 } },
+        'project');
     utilScript.buildDateRangePicker('#CreationDate', true, false);
     utilScript.buildDateRangePicker('#searchDate', false, false);
 
