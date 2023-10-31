@@ -58,7 +58,7 @@ const utilScript = {
         let schema = this.getSwaggerClient().spec.paths[path][method].requestBody.content[content].schema;
         console.log(schema);
         $.each(schema.properties, function (key, value) {
-            key = vacations.capitalizeFirstLetter(key);
+            key = utilScript.capitalizeFirstLetter(key);
             rules[key] = {};
             if (value.nullable === false) {
                 rules[key].required = true;
@@ -79,7 +79,7 @@ const utilScript = {
         });
 
         $.each(schema.required, function (key, value) {
-            value = vacations.capitalizeFirstLetter(value);
+            value = utilScript.capitalizeFirstLetter(value);
             rules[value].required = true;
         });
 
@@ -148,7 +148,7 @@ const utilScript = {
     },
 
     clearRowData: function () {
-        vacations.rowData = null;
+        utilScript.rowData = null;
     },
     dataTables: {
         dom1: "rt<'row align-items-center'<'col'l><'col'i><'col'p>>",
@@ -646,8 +646,8 @@ const utilScript = {
             $(this).val(null).trigger('change');
         }).on('apply.daterangepicker', function (ev, picker) {
             let value = single ? picker.startDate.format(myFormat) : picker.startDate.format(myFormat) + ' - ' + picker.endDate.format(myFormat);
-            vacations.startDate = picker.startDate.format(myFormat);
-            vacations.endDate = single ? picker.startDate.format(myFormat) : picker.endDate.format(myFormat);
+            utilScript.startDate = picker.startDate.format(myFormat);
+            utilScript.endDate = single ? picker.startDate.format(myFormat) : picker.endDate.format(myFormat);
             //console.log(value);
             selector.val(value).trigger('change');
         }).trigger('hide.daterangepicker');
